@@ -1,0 +1,6 @@
+projectKey=devsecops
+serverUrl=http://localhost:9000
+serverVersion=25.3.0.104237
+dashboardUrl=http://localhost:9000/dashboard?id=devsecops
+ceTaskId=b215ca2a-cf61-4806-b1e0-c0d8e4292684
+ceTaskUrl=http://localhost:9000/api/ce/task?id=b215ca2a-cf61-4806-b1e0-c0d8e4292684

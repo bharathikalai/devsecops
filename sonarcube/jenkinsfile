@@ -1,0 +1,45 @@
+pipeline {
+    agent any
+
+    environment {
+        PATH+SONAR = "/opt/sonar-scanner/bin"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/bharathikalai/devsecops.git'
+            }
+        }
+
+       stage('Install Dependencies') {
+        steps {
+            dir('sonarcube') {
+                sh 'npm install'
+            }
+           }
+        }
+        stage('SonarQube Scan') {
+            steps {
+                withSonarQubeEnv('My SonarQube') {
+                    dir('sonarqube') {
+                        sh """
+                            sonar-scanner \
+                              -Dsonar.projectKey=devsecops \
+                              -Dsonar.sources=. \
+                              -Dsonar.host.url=http://localhost:9000 \
+                              -Dsonar.login=squ_86856248722108b4dded4cda711f5a8787555f18
+                        """
+                    }
+                }
+            }
+        }
+        stage("Quality Gate") {
+            steps {
+                timeout(time: 1, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+    }
+}
