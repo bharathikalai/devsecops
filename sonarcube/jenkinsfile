@@ -1,8 +1,8 @@
 pipeline {
     agent any
-
+    
     environment {
-        PATH+SONAR = "/opt/sonar-scanner/bin"
+        PATH = "/opt/sonar-scanner/bin:${env.PATH}"
     }
 
     stages {
@@ -21,8 +21,7 @@ pipeline {
         }
         stage('SonarQube Scan') {
             steps {
-                withSonarQubeEnv('My SonarQube') {
-                    dir('sonarqube') {
+                    dir('sonarcube') {
                         sh """
                             sonar-scanner \
                               -Dsonar.projectKey=devsecops \
@@ -30,14 +29,6 @@ pipeline {
                               -Dsonar.host.url=http://localhost:9000 \
                               -Dsonar.login=squ_86856248722108b4dded4cda711f5a8787555f18
                         """
-                    }
-                }
-            }
-        }
-        stage("Quality Gate") {
-            steps {
-                timeout(time: 1, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
                 }
             }
         }

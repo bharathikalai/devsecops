@@ -1,13 +1,16 @@
 {
-    "name": "sonar-node-app",
-    "version": "1.0.0",
-    "main": "app.js",
-    "scripts": {
-      "start": "node app.js",
-      "test": "echo \"No tests yet\" && exit 0"
-    },
-    "dependencies": {
-      "express": "^4.18.2"
-    }
+  "name": "sonar-node-app",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "jest --coverage"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^6.3.4"
   }
-  
+}
