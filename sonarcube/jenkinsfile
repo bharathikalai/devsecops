@@ -1,6 +1,5 @@
 pipeline {
     agent any
-    
     environment {
         PATH = "/opt/sonar-scanner/bin:${env.PATH}"
     }
@@ -16,6 +15,7 @@ pipeline {
         steps {
             dir('sonarcube') {
                 sh 'npm install'
+                sh 'npm test'
             }
            }
         }
@@ -27,10 +27,14 @@ pipeline {
                               -Dsonar.projectKey=devsecops \
                               -Dsonar.sources=. \
                               -Dsonar.host.url=http://localhost:9000 \
-                              -Dsonar.login=squ_86856248722108b4dded4cda711f5a8787555f18
+                              -Dsonar.login=squ_86856248722108b4dded4cda711f5a8787555f18 \
+                              -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
+                              -Dsonar.exclusions=server.js,node_modules/**,coverage/**,__tests__/**
                         """
                 }
             }
         }
     }
 }
+
+
