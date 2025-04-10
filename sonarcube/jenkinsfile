@@ -11,17 +11,19 @@ pipeline {
             }
         }
 
-       stage('Install Dependencies') {
-        steps {
-            dir('sonarcube') {
-                sh 'npm install'
-                sh 'npm test'
+        stage('Install Dependencies') {
+            steps {
+                dir('sonarcube') {
+                    sh 'npm install'
+                    sh 'npm test'
+                }
             }
-           }
         }
+
         stage('SonarQube Scan') {
             steps {
-                    dir('sonarcube') {
+                dir('sonarcube') {
+                    withSonarQubeEnv('MySonarQubeServer') {
                         sh """
                             sonar-scanner \
                               -Dsonar.projectKey=devsecops \
@@ -31,10 +33,17 @@ pipeline {
                               -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
                               -Dsonar.exclusions=server.js,node_modules/**,coverage/**,__tests__/**
                         """
+                    }
+                }
+            }
+        }
+
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 2, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
                 }
             }
         }
     }
 }
-
-
