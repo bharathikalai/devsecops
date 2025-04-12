@@ -1,0 +1,10 @@
+image: sonarsource/sonar-scanner-cli:latest
+
+pipelines:
+  pull-requests:
+    "**":
+      - step:
+          name: SonarQube PR Analysis
+          script:
+            - sonar-scanner -Dsonar.projectKey=your-project-key -Dsonar.sources=. -Dsonar.host.url=https://025f-210-18-182-5.ngrok-free.app/ -Dsonar.login=$SONAR_TOKEN_old
+            # - sonar-scanner -Dsonar.projectKey=your-project-key -Dsonar.sources=. -Dsonar.host.url=https://025f-210-18-182-5.ngrok-free.app/ -Dsonar.login=$SONAR_TOKEN -Dsonar.pullrequest.key=${BITBUCKET_PR_ID} -Dsonar.pullrequest.branch=${BITBUCKET_BRANCH} -Dsonar.pullrequest.base=${BITBUCKET_PR_DESTINATION_BRANCH}
