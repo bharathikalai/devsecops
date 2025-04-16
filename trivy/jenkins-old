@@ -1,0 +1,33 @@
+pipeline {
+    agent any
+    environment {
+        IMAGE_NAME = "my-python-app"
+        IMAGE_TAG = "latest"
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/bharathikalai/devsecops.git'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    sh '''
+                        cd trivy
+                        docker build -t $IMAGE_NAME:$IMAGE_TAG .
+                    '''
+                }
+            }
+        }
+
+        stage('Scan Docker Image') {
+            steps {
+                script {
+                    sh 'trivy image $IMAGE_NAME:$IMAGE_TAG || true'
+                }
+            }
+        }
+    }
+} 

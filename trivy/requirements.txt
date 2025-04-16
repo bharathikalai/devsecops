@@ -1,1 +1,7 @@
-Flask==2.3.2
+# Flask==2.3.2
+
+
+# #test
+flask==0.5     # Known for several vulnerabilities
+requests==2.19.1  # Has known security issues
+pyyaml==3.13   # Vulnerable to arbitrary code execution

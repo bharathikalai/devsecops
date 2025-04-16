@@ -22,11 +22,30 @@ pipeline {
             }
         }
 
+        stage('Download Trivy HTML Template') {
+            steps {
+                sh 'curl -sSL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl -o html.tpl'
+            }
+        }
+
         stage('Scan Docker Image') {
             steps {
                 script {
-                    sh 'trivy image $IMAGE_NAME:$IMAGE_TAG || true'
+                    sh '''
+                        trivy image --severity HIGH,CRITICAL \
+                                    --exit-code 1 \
+                                    --format template \
+                                    --template "@html.tpl" \
+                                    -o trivy-report.html \
+                                    $IMAGE_NAME:$IMAGE_TAG
+                    '''
                 }
+            }
+        }
+
+        stage('Archive Trivy Report') {
+            steps {
+                archiveArtifacts artifacts: 'trivy-report.html', onlyIfSuccessful: false
             }
         }
     }
