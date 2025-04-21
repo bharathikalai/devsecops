@@ -1,0 +1,45 @@
+pipeline {
+    agent any
+    environment {
+        IMAGE_NAME = "my-python-app"
+        IMAGE_TAG = "latest"
+        SNYK_TOKEN = "b474a7b2-116sijqisjkjqkjk"
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/bharathikalai/devsecops.git'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    sh '''
+                        cd trivy
+                        docker build -t $IMAGE_NAME:$IMAGE_TAG .
+                    '''
+                }
+            }
+        }
+
+        stage('Install Snyk Locally') {
+            steps {
+                sh 'npm install snyk'
+            }
+        }
+
+        stage('Authenticate Snyk') {
+            steps {
+                sh 'npx snyk auth $SNYK_TOKEN'
+            }
+        }
+
+        stage('Snyk Container Scan & Monitor') {
+            steps {
+                // sh "npx snyk container test ${IMAGE_NAME}:${IMAGE_TAG} --severity-threshold=medium"
+                sh "npx snyk container monitor ${IMAGE_NAME}:${IMAGE_TAG}"
+            }
+        }
+    }
+}
