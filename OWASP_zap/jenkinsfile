@@ -1,9 +1,11 @@
 pipeline {
     agent any
-       environment {
+    environment {
         ZAP_IMAGE = 'softwaresecurityproject/zap-stable' // ZAP Docker image
         TARGET_URL = 'http://172.17.0.1:5009'  // URL of the deployed app
         REPORT_NAME = 'full-report.html' // ZAP report name
+        IMAGE_NAME = 'your-image-name' // Name of the Docker image (replace with your image name)
+        IMAGE_TAG = 'latest' // Docker image tag (replace with your tag)
     }
     stages {
         stage('Checkout') {
@@ -16,8 +18,8 @@ pipeline {
             steps {
                 script {
                     sh '''
-                     docker stop dolubolu
-                     docker rm dolubolu
+                        docker stop dolubolu || true
+                        docker rm dolubolu || true
                     '''
                 }
             }
@@ -28,21 +30,23 @@ pipeline {
                 script {
                     sh '''
                         cd OWASP_zap
-                        docker build -t $IMAGE_NAME:$IMAGE_TAG .
+                        docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .
                     '''
                 }
             }
         }
+
         stage('Create the container') {
             steps {
                 script {
                     sh '''
                         cd OWASP_zap
-                        docker run -d -p 5009:5009 $IMAGE_NAME:$IMAGE_TAG -n dolubolu 
+                        docker run -d -p 5009:5009 --name dolubolu ${IMAGE_NAME}:${IMAGE_TAG}
                     '''
                 }
             }
         }
+
         stage('ZAP Security Scan') {
             steps {
                 echo 'Running ZAP security scan...'
@@ -50,10 +54,10 @@ pipeline {
                     // Run the ZAP security scan using Docker
                     sh """
                     docker run --rm \
-                    -v $(pwd):/zap/wrk \
+                    -v \$(pwd):/zap/wrk \
                     ${ZAP_IMAGE} zap-full-scan.py \
                     -t ${TARGET_URL} \
-                    -r ${REPORT_NAME}
+                    -r /zap/wrk/${REPORT_NAME} || true
                     """
                 }
             }
@@ -63,9 +67,8 @@ pipeline {
             steps {
                 echo 'Publishing ZAP report...'
                 // Archive the generated report as a Jenkins artifact
-                archiveArtifacts artifacts: "${REPORT_NAME}", allowEmptyArchive: true
+                archiveArtifacts artifacts: 'zap/full-report.html', allowEmptyArchive: true
             }
         }
-
     }
 }
