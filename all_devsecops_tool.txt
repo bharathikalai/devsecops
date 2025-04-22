@@ -1,0 +1,21 @@
+Tool	                                      Use Case	                                                                    Open Source
+Snyk	                                      Detects and fixes vulnerabilities in code, dependencies, containers, and IaC	   No
+Aqua Security	                              Secures containers, Kubernetes, and cloud-native environments	                   No
+SonarQube	                                  Static code analysis for detecting bugs, vulnerabilities, and code smells	       Yes
+HashiCorp Vault                               Manages secrets and sensitive data, provides encryption	                       Yes
+Trivy	                                      Scans container images, filesystems, and IaC for vulnerabilities	               Yes
+GitLab Security	                              Static and dynamic application security testing integrated into CI/CD	           No
+OWASP ZAP	                                  Web application security scanner for detecting vulnerabilities	               Yes
+Checkmarx	                                  Static and dynamic security testing for code vulnerabilities                     No
+Fortify	                                      Static and dynamic code security testing	                                       No
+WhiteSource                                   Manages open-source vulnerabilities and licenses 	                               No
+Tenable (Nessus)	                          Network vulnerability scanning and compliance checks	                           No
+Jenkins                                      (with DevSecOps Plugins)	CI/CD platform with security plugin integrations	   Yes
+CloudGuard                                    Provides security posture management and threat prevention for cloud	           No
+Falco	                                      Real-time security monitoring for cloud-native environments	                   Yes
+Tenable.io                                    Cloud-based vulnerability management and risk analysis	                       No
+Jfrog Xray                                    Scans artifacts and dependencies for vulnerabilities	                           No
+IBM Security QRadar                           SIEM solution for security monitoring and event management	                   No
+Kube-bench	                                  Audits Kubernetes clusters against CIS benchmarks	                               Yes
+Anchore	                                      Container image scanning for vulnerabilities and policy enforcement	           Yes
+Prisma Cloud	                              Provides cloud-native security and compliance management	                       No

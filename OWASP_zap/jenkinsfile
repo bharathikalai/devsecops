@@ -1,0 +1,71 @@
+pipeline {
+    agent any
+       environment {
+        ZAP_IMAGE = 'softwaresecurityproject/zap-stable' // ZAP Docker image
+        TARGET_URL = 'http://172.17.0.1:5009'  // URL of the deployed app
+        REPORT_NAME = 'full-report.html' // ZAP report name
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/bharathikalai/devsecops.git'
+            }
+        }
+
+        stage('Docker container stop and remove') {
+            steps {
+                script {
+                    sh '''
+                     docker stop dolubolu
+                     docker rm dolubolu
+                    '''
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    sh '''
+                        cd OWASP_zap
+                        docker build -t $IMAGE_NAME:$IMAGE_TAG .
+                    '''
+                }
+            }
+        }
+        stage('Create the container') {
+            steps {
+                script {
+                    sh '''
+                        cd OWASP_zap
+                        docker run -d -p 5009:5009 $IMAGE_NAME:$IMAGE_TAG -n dolubolu 
+                    '''
+                }
+            }
+        }
+        stage('ZAP Security Scan') {
+            steps {
+                echo 'Running ZAP security scan...'
+                script {
+                    // Run the ZAP security scan using Docker
+                    sh """
+                    docker run --rm \
+                    -v $(pwd):/zap/wrk \
+                    ${ZAP_IMAGE} zap-full-scan.py \
+                    -t ${TARGET_URL} \
+                    -r ${REPORT_NAME}
+                    """
+                }
+            }
+        }
+
+        stage('Publish ZAP Report') {
+            steps {
+                echo 'Publishing ZAP report...'
+                // Archive the generated report as a Jenkins artifact
+                archiveArtifacts artifacts: "${REPORT_NAME}", allowEmptyArchive: true
+            }
+        }
+
+    }
+}
