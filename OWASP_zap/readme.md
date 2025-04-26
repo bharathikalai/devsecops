@@ -24,26 +24,25 @@ AJAX Spidering	                                      Helps ZAP crawl modern webs
 Contextual Analysis                                   You can tell ZAP which roles, users, or areas to scan, so it knows what to focus on (e.g., scan only as "admin").
 
 
-
-
 # docker magic
 
 ```
  sudo docker run --rm -v $(pwd):/zap/wrk softwaresecurityproject/zap-stable zap-full-scan.py -t http://172.17.0.1:5009 -r full-report.html
-
+ 
 ```
 
 # allow the port
 ```
 sudo ufw allow 5009
 sudo ufw reload
+
 ```
 
 # explain the command
 
 ```
-Part	                Explanation
-docker run	            Tells Docker to start a container.
+Part	                                  Explanation
+docker run	                              Tells Docker to start a container.
 --rm	                Automatically removes the container after it finishes (keeps things clean).
 -v $(pwd):/zap/wrk	    This mounts your current folder (from your host system) into the container's /zap/wrk folder.
 So that ZAP can save the report file in your machine, not inside the container.

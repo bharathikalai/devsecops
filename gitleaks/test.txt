@@ -1,0 +1,2 @@
+AWS_ACCESS_KEY = "tdgjdhgsjhgda98w721987982"
+AWE_SECRET_KEY = "sjkkdhkjhskj2u98282"
