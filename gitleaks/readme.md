@@ -18,7 +18,13 @@ gitleaks git --report-path gitleaks-report.json
 # cicd git leaks commands
 
 ```
-
 gitleaks detect -v --exit-code=1
+
+```
+
+# local git scan
+
+```
+gitleaks detect --no-git -v
 
 ```
