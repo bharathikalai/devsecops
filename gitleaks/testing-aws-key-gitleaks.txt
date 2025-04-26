@@ -1,0 +1,4 @@
+AWS_ACCESS_KEY = "hkqjkdhkwjdah368762148768324"
+
+
+PASSWORD = "JHSAKJHSKhskj"

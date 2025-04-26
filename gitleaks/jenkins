@@ -1,0 +1,41 @@
+pipeline {
+    agent any
+    environment {
+        GITLEAKS_REPORT = 'gitleaks-report.json'
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/bharathikalai/devsecops.git'
+            }
+        }
+
+        stage('GitLeaks Scan') {
+            steps {
+                sh '''
+                    echo "Running GitLeaks scan..."
+                    gitleaks detect --source . --report-format json --report-path ${GITLEAKS_REPORT}
+                '''
+            }
+        }
+
+        stage('Check for Leaks') {
+             steps {
+                 script {
+                     def leaks = readFile("${env.GITLEAKS_REPORT}").trim()
+                     if (leaks && leaks != '[]') {
+                         error "Secrets were detected by GitLeaks! Stopping the pipeline."
+                     } else {
+                         echo "No secrets detected by GitLeaks."
+                     }
+                 }
+             }
+         }
+    }
+
+     post {
+         always {
+             archiveArtifacts artifacts: "${GITLEAKS_REPORT}", allowEmptyArchive: true
+         }
+     }
+}
